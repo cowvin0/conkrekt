@@ -21,6 +21,12 @@ editor_options:
 \thispagestyle{empty}
 :::
 
+# Introdução 
+
+<!-- A pesquisa em questão voltou-se a modelar a força compressiva de do concreto. Para isso, foi utilizado um banco de dados que contém o tempo de secagem e os elementos que compôem a produção do concreto, além de ter sido também a linguagem de programação R. Devido a escolha do R, usamos o pacote tidymodels, criado em 2021 por Max Kahn -->
+
+O concreto é um dos materias de construção mais utilizados na engenharia civil devido à sua durabilidade, versatilidade e resistência. Ele é composto por agregados, água e principalmente cimento. Analisando-se todo o cenário e necessidades da engenharia civil, foi-se proposto a modelagem da força compressiva do concreto. Para isso, utilizamos um banco de dados que contém o tempo que o concreto foi deixado para secar e os elementos que o compõem. Fazendo-se uso desses dados, da linguagem R e seu pacote tidymodels para modelagem estatística, foi possível chegar a dois modelos para que se pudesse suprir com a falta de análise estatística no mercado de engenharia civil, um mais simples e outro mais complexo.
+
 # Metodologia
 As análises a seguir foram realizadas usando a linguagem de programação R [@R] com o *framework* de modelagem estatística *tidymodels* [@tidymodels].
 
@@ -44,31 +50,31 @@ autocorrelação
 library(tidyverse)
 library(tidymodels)
 data <- concrete
-data |> 
-    ggplot(aes(x = cement)) +
-    geom_density() +
-    theme()
- 
-data |> 
-    recipe(compressive_strength ~ .) |> 
+# data |>
+#     ggplot(aes(x = cement)) +
+#     geom_density() +
+#     theme()
+
+data |>
+    recipe(compressive_strength ~ .) |>
     step_rm(superplasticizer) |>
-    step_YeoJohnson(all_numeric_predictors()) |>
     step_mutate(wc = water / cement) |>
     step_rm(coarse_aggregate, fine_aggregate, cement) |>
-    # step_interact(~ all_numeric_predictors() : all_numeric_predictors()) |>
-    step_poly(all_numeric_predictors(), -fly_ash,degree = 2) |>
-    prep() |> 
-    bake(data) |> 
-    lm(compressive_strength ~ ., data = _) ->modelo
-    summary()
+    step_bs(all_numeric_predictors()) |>
+    step_interact(~ all_numeric_predictors() : all_numeric_predictors()) |>
+    step_poly(all_numeric_predictors(), degree = 2) |>
+    prep() |>
+    bake(data) |>
+    lm(compressive_strength ~ ., data = _) -> modelo
+    # summary()
 ```
 
 ```{r}
-data |> 
+data |>
   ggplot(aes(x = compressive_strength, y = predict(modelo))) +
   geom_point() +
   geom_abline()+
   coord_obs_pred() +
   theme_bw()
-```
+ ```
 
