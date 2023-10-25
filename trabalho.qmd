@@ -1,0 +1,47 @@
+---
+format: pdf
+lang: pt
+# bibliography: includes/bib.bibtex
+title: kek
+subtitle: UFPB - Regressão I
+author:
+  - name: Paulo Ricardo Seganfredo Campana
+  - name: Gabriel de Jesus Pereira
+date: today
+date-format: long
+warning: false
+echo: false
+# cache: true
+---
+
+::: hidden
+\pagestyle{empty}
+\thispagestyle{empty}
+:::
+
+```{r}
+data
+
+plot(data$cement, data$compressive_strength)
+
+cement2 <- car::boxCoxVariable(data$cement)
+
+
+car::boxCox(data$compressive_strength ~ data$cement)
+library(tidyverse)
+data |> 
+    ggplot(aes(x = cement)) +
+    geom_density() +
+    theme()
+ 
+data |> 
+    recipe(compressive_strength ~ .) |> 
+    step_YeoJohnson(all_numeric_predictors()) |>
+    # step_interact(~ all_numeric_predictors() : all_numeric_predictors()) |>
+    step_poly(all_numeric_predictors(), degree = 3) |>
+    prep() |> 
+    bake(data) |> 
+    lm(compressive_strength ~ ., data = _) |> 
+    summary()
+```
+
