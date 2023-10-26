@@ -12,8 +12,6 @@ date-format: long
 warning: false
 echo: false
 # cache: true
-editor_options: 
-  chunk_output_type: console
 ---
 
 ::: hidden
@@ -21,12 +19,61 @@ editor_options:
 \thispagestyle{empty}
 :::
 
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(kableExtra)
+options(tidymodels.dark = TRUE)
+set.seed(42)
+
+data <- concrete |> 
+    rename(
+        cimento = cement,
+        escória_de_aço = blast_furnace_slag,
+        cinzas_pulverizadas = fly_ash,
+        água = water,
+        superplastificante = superplasticizer,
+        agregado_graúdo = coarse_aggregate,
+        agregado_miúdo = fine_aggregate,
+        tempo = age,
+        força_compressiva = compressive_strength
+    )
+
+splits <- initial_split(data)
+train <- training(splits)
+test <- testing(splits)
+```
+
+# Resumo
+
+ESCREVER MERDA
+
+# Introdução 
+O concreto é um dos matérias de construção mais utilizados na engenharia civil devido à sua durabilidade, versatilidade e resistência. Ele é composto por agregados, água e principalmente cimento. Analisando-se todo o cenário e necessidades da engenharia civil, foi-se proposto a modelagem da força compressiva do concreto. Para isso, utilizamos um banco de dados que contém o tempo que o concreto foi deixado para secar e as substâncias que o compõem. 
+
+Fazendo uso desses dados, da modelagem e análise estatística, foi possível chegar a dois modelos de regressão linear, um mais simples e outro mais complexo, com o intuito de poder saber o que leva um concreto a ser mais resistente do que outro e para previsão da força compressiva de certo concreto baseado nas variáveis de estudo.
+
 # Metodologia
-As análises a seguir foram realizadas usando a linguagem de programação R [@R] com o *framework* de modelagem estatística *tidymodels* [@tidymodels].
+As análises a seguir foram realizadas usando a linguagem de programação R [@R] com o *framework* de modelagem estatística *tidymodels* [@tidymodels]. Os códigos utilizados estão disponíveis no github [@github] e os documentos do relatório e apresentação foram feitos com Quarto [@quarto], um sistema de escrita e publicação científica.
 
-Utilizamos o conjunto de dados sobre concreto de alta performance [@concrete] onde foi estudado um modelo de regressão linear múltipla em que a `força_compressiva` do concreto é explicada pelas variáveis que achamos importantes no estudo: o `tempo` de secagem da mistura final (em dias) e os materias que compõem a mistura: `cimento`, `escória_de_aço`, `cinzas_pulverizadas`, `água`, `superplastificante`, `agregado_graúdo` e `agregado_fino` (em kilogramas por metro cúbico).
+Utilizamos o conjunto de dados sobre concreto de alta performance [@concrete] onde foi estudado um modelo de regressão linear múltipla em que a `força_compressiva` do concreto é explicada a princípio pelas variáveis que achamos importantes no estudo: o `tempo` de secagem da mistura final (em dias) e os matérias que compõem a mistura: `cimento`, `escória_de_aço`, `cinzas_pulverizadas`, `água`, `superplastificante`, `agregado_graúdo` e `agregado_miúdo` (em quilogramas por metro cúbico).
 
-Como se tratam de dados experimentais sobre o concreto, esse conjunto inclui várias combinações diferentes entre os regressores, desse modo a correlação entre as variáveis é baixa, atingindo no máximo 50%. Atentendo a suposição de não multicolinearidade do modelo.
+Sendo assim, ajustamos dois modelos, um primeiro mais simples utilizando apenas 4 dos regressores e algumas transformações com o objetivo de estabelecer uma relação compreensível das substâncias que mais interferem na força compressiva do concreto. O segundo modelo é mais complexo, trazendo a interação entre as variáveis e composição das mesmas em novas medidas, este foca no poder preditivo da regressão.
+
+Como se tratam de dados experimentais sobre o concreto, esse conjunto inclui várias combinações de valores diferentes entre os regressores, desse modo, a correlação entre as variáveis é baixa, atingindo no máximo 50%.
+
+Fizemos uso da transformação Yeo-Johnson [@yeo], que de maneira similar a Box-Cox, é uma transformação feita para tornar a distribuição dos regressores mais normais e estabilizar a variância, porém também funciona para dados que contém valores 0 e números negativos. O parâmetro $\lambda$ é estimado por máxima verossimilhança.
+
+$$
+\psi(\lambda, y) = \begin{cases}
+    ((1 + y)^\lambda - 1) / \lambda \hspace{+44pt}    \lambda \neq 0, y \geqslant 0 \\
+    \ln(1 + y)  \hspace{+76pt}                        \lambda = 0, y \geqslant 0 \\
+    ((1 - y)^{2 - \lambda} - 1) / (\lambda - 2) \quad \lambda \neq 2, y < 0 \\
+    -\ln(1 - y) \hspace{+67pt}                        \lambda = 2, y < 0
+ \end{cases}
+$$
+
+# Resultados
 
 <!-- 
 normalidade
@@ -37,38 +84,103 @@ autocorrelação
 -->
 
 
-
+```{r}
+train |> 
+    recipe(força_compressiva ~ .) |> 
+    step_rm(cinzas_pulverizadas, superplastificante, agregado_graúdo, agregado_miúdo) |> 
+    step_YeoJohnson(all_numeric_predictors()) |> 
+    prep(verbose = TRUE) |> 
+    tidy(number = 2)
+```
 
 ```{r}
-#| output: false
-library(tidyverse)
-library(tidymodels)
-data <- concrete
-data |> 
-    ggplot(aes(x = cement)) +
-    geom_density() +
-    theme()
- 
-data |> 
-    recipe(compressive_strength ~ .) |> 
-    step_rm(superplasticizer) |>
-    step_YeoJohnson(all_numeric_predictors()) |>
-    step_mutate(wc = water / cement) |>
-    step_rm(coarse_aggregate, fine_aggregate, cement) |>
-    # step_interact(~ all_numeric_predictors() : all_numeric_predictors()) |>
-    step_poly(all_numeric_predictors(), -fly_ash,degree = 2) |>
-    prep() |> 
-    bake(data) |> 
-    lm(compressive_strength ~ ., data = _) ->modelo
+workflow <- workflow() |> 
+    add_model(linear_reg(), formula = força_compressiva ~ . - 1) |> 
+    add_recipe(
+        train |> 
+            recipe(força_compressiva ~ .) |> 
+            step_rm(cinzas_pulverizadas, superplastificante, agregado_graúdo, agregado_miúdo) |> 
+            step_YeoJohnson(all_numeric_predictors()) |>
+            step_poly(tempo, degree = 2)
+    )
+
+workflow |> 
+    fit(train) |> 
+    extract_fit_engine() |>
+    summary() 
+
+workflow |> 
+    last_fit(splits) |> 
+    collect_metrics()
+
+workflow |>
+    fit(data) |> 
+    extract_fit_engine() |> 
+    augment(new_data = data) |> 
+    ggplot(aes(x = força_compressiva, y = .fitted)) +
+    geom_point(aes(color = .std.resid)) +
+    geom_abline() +
+    scale_color_viridis_c() +
+    coord_obs_pred() +
+    theme_bw()
+
+workflow |>
+    fit(data) |> 
+    extract_fit_engine() |> 
+    augment(new_data = data) |> 
+    ggplot(aes(x = força_compressiva, y = .std.resid)) +
+    geom_point(aes(color = .std.resid)) +
+    geom_smooth(color = "#00000080", se = FALSE) +
+    scale_color_viridis_c() +
+    theme_bw()
+```
+
+```{r}
+# mais complicado
+workflow <- workflow() |> 
+    add_model(linear_reg(), formula = força_compressiva ~ . - 1) |> 
+    add_recipe(
+        train |> 
+            recipe(força_compressiva ~ .) |> 
+            step_rm(superplastificante) |>
+            step_YeoJohnson(all_numeric_predictors()) |>
+            step_poly(água, degree = 3) |> 
+            step_poly(cimento, escória_de_aço, agregado_miúdo, tempo, degree = 2) |> 
+            step_interact(~ cinzas_pulverizadas : cimento_poly_2) |> 
+            step_interact(~ agregado_graúdo : (água_poly_2 + água_poly_3)) |> 
+            step_interact(~ água_poly_1 : tempo_poly_1) |> 
+            step_interact(~ agregado_miúdo_poly_2 : tempo_poly_1) |> 
+            step_interact(~ tempo_poly_1 : escória_de_aço_poly_1) |> 
+            step_interact(~ tempo_poly_2 : cimento_poly_1) 
+    )
+
+workflow |> 
+    fit(train) |> 
+    extract_fit_engine() |>
     summary()
-```
 
-```{r}
-data |> 
-  ggplot(aes(x = compressive_strength, y = predict(modelo))) +
-  geom_point() +
-  geom_abline()+
-  coord_obs_pred() +
-  theme_bw()
-```
+workflow |> 
+    last_fit(splits) |> 
+    collect_metrics()
 
+workflow |>
+    fit(data) |> 
+    extract_fit_engine() |> 
+    augment(new_data = data) |> 
+    ggplot(aes(x = força_compressiva, y = .fitted)) +
+    geom_point(aes(color = .std.resid)) +
+    geom_abline() +
+    scale_color_viridis_c() +
+    coord_obs_pred() +
+    theme_bw()
+
+workflow |>
+    fit(data) |> 
+    extract_fit_engine() |> 
+    augment(new_data = data) |> 
+    ggplot(aes(x = força_compressiva, y = .std.resid)) +
+    geom_point(aes(color = .std.resid)) +
+    geom_smooth(color = "#00000080", se = FALSE) +
+    scale_color_viridis_c() +
+    theme_bw()
+```
