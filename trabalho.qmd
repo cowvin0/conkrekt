@@ -14,7 +14,7 @@ date-format: long
 warning: false
 echo: false
 cache: true
-# monofont: "Ubuntu Mono"
+monofont: "Ubuntu Mono"
 monofontoptions: Scale = 1
 fig-cap-location: top
 ---
@@ -306,7 +306,7 @@ Sendo assim, a autocorrelação dos resíduos se dá pela estrutura dos dados ex
 |tempo2|0.369|0.422|
 |tempo3| -0.0549| -0.0458|
 
-Aqui podemos ver o intervalo de confiança para os coeficientes de regressão, que nos permitem entender o impacto médio causado na força compressiva do concreto por cada uma variável regressora. 
+Aqui podemos ver o intervalo de confiança para os coeficientes de regressão, que nos permitem entender o impacto médio causado na força compressiva do concreto por cada uma variável regressora. Por exemplo, para cada $kg$ de cimento em uma mistura de $m_3$ há um aumento médio na força compressiva do concreto entre 0.742 e 0.795. 
 
 {{< pagebreak >}}
 
