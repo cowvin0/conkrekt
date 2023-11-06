@@ -14,7 +14,7 @@ date-format: long
 warning: false
 echo: false
 cache: true
-monofont: "Ubuntu Mono"
+# monofont: "Ubuntu Mono"
 monofontoptions: Scale = 1
 fig-cap-location: top
 ---
@@ -49,8 +49,13 @@ train <- training(splits)
 test <- testing(splits)
 ```
 
+{{< pagebreak >}}
+
 # Resumo
-ESCREVER MERDA
+
+O aprimoramento do país está diretamente relacionado com o avanço da indústria, particularmente na área de construção civil, sendo uma das áreas mais importantes para a criação de empregos e o aperfeiçoamento de toda a infraestrutura de uma nação. O concreto, um dos materiais mais importantes e presentes na construção civil, está sempre em constante desenvolvimento a cada dia que passa, no entanto, não é possível saber onde pode ser melhorado se não antes conhecermos a seleção adequada de materiais e características da mistura. Além de sua aplicação estrutural, o concreto também é crucial na promoção da eficiência energética de edifícios, contribuindo para a redução do consumo de energia. Dessa forma, entender e aprimorar as propriedades do concreto, é de importância vital para garantir a segurança e o desempenho de estruturas de construção, bem como a sustentabilidade ambiental em projetos futuros. E é com base nisso que este artigo se propõe a investigar a força compressiva do concreto com técnicas estatísticas. 
+
+{{< pagebreak >}}
 
 # Introdução 
 O concreto é um dos matérias de construção mais utilizados na engenharia civil devido à sua durabilidade, versatilidade e resistência. Ele é composto por agregados, água e principalmente cimento. Analisando o cenário e as necessidades da engenharia civil, foi proposto a modelagem da força compressiva do concreto para a possibilidade de expandir o conhecimento sobre concreto de alta performance na indústria. Para isso, utilizamos um banco com dados experimentais de diferentes combinações de substâncias que compõem o concreto, o tempo que a mistura foi deixada para secar e a força compressiva final. 
@@ -291,6 +296,17 @@ Os resíduos do modelo são de fato correlacionados entre observações sequenci
 
 Sendo assim, a autocorrelação dos resíduos se dá pela estrutura dos dados experimentais, não por uma relação temporal entre cada experimento.
 
+: Intervalo de confiança dos coeficientes de regressão
+
+|Coeficientes|LI|LS|
+|:-----------|-:|:-|
+|cimento|0.742|0.795|
+|escória_de_aço|0.171|0.201|
+|água|-0.0244|-0.0216|
+|tempo2|0.369|0.422|
+|tempo3| -0.0549| -0.0458|
+
+Aqui podemos ver o intervalo de confiança para os coeficientes de regressão, que nos permitem entender o impacto médio causado na força compressiva do concreto por cada uma variável regressora. 
 
 {{< pagebreak >}}
 
