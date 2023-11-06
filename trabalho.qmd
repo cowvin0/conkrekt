@@ -49,21 +49,19 @@ train <- training(splits)
 test <- testing(splits)
 ```
 
-{{< pagebreak >}}
-
 # Resumo
+O desenvolvimento de um país emergente está diretamente relacionado com o avanço da indústria, particularmente na construção civil, sendo uma das áreas mais importantes para a criação de empregos e o aperfeiçoamento da infraestrutura de uma nação. O concreto, um dos materiais mais importantes e presentes na construção civil e está sempre em constante desenvolvimento, no entanto, não é possível saber como podemos melhorar-lo se não antes conhecermos a seleção adequada de materiais e características da mistura. Dessa forma, entender e aprimorar as propriedades do concreto, é de importância vital para garantir a segurança e o desempenho de estruturas modernas. Com base nisso, este estudo se propõe a investigar os fatores que influenciam na força compressiva do concreto utilizando a regressão linear múltipla e técnicas estatísticas de análise da mesma. Obtendo assim uma relação numérica entre as características da criação do concreto e sua eficácia como material base para grandes estruturas.
 
-O aprimoramento do país está diretamente relacionado com o avanço da indústria, particularmente na área de construção civil, sendo uma das áreas mais importantes para a criação de empregos e o aperfeiçoamento de toda a infraestrutura de uma nação. O concreto, um dos materiais mais importantes e presentes na construção civil, está sempre em constante desenvolvimento a cada dia que passa, no entanto, não é possível saber onde pode ser melhorado se não antes conhecermos a seleção adequada de materiais e características da mistura. Além de sua aplicação estrutural, o concreto também é crucial na promoção da eficiência energética de edifícios, contribuindo para a redução do consumo de energia. Dessa forma, entender e aprimorar as propriedades do concreto, é de importância vital para garantir a segurança e o desempenho de estruturas de construção, bem como a sustentabilidade ambiental em projetos futuros. E é com base nisso que este artigo se propõe a investigar a força compressiva do concreto com técnicas estatísticas. 
-
-{{< pagebreak >}}
+Palavras-chave: Regressão linear, concreto, suposições do modelo.
 
 # Introdução 
-O concreto é um dos matérias de construção mais utilizados na engenharia civil devido à sua durabilidade, versatilidade e resistência. Ele é composto por agregados, água e principalmente cimento. Analisando o cenário e as necessidades da engenharia civil, foi proposto a modelagem da força compressiva do concreto para a possibilidade de expandir o conhecimento sobre concreto de alta performance na indústria. Para isso, utilizamos um banco com dados experimentais de diferentes combinações de substâncias que compõem o concreto, o tempo que a mistura foi deixada para secar e a força compressiva final. 
+Como um dos matérias de construção mais utilizados na engenharia civil devido à sua durabilidade, versatilidade e resistência. O concreto é composto por agregados, água e principalmente cimento. Analisando o cenário e as necessidades da engenharia civil, foi proposto a modelagem da força compressiva do concreto para a possibilidade de expandir o conhecimento sobre concreto de alta performance na indústria. Para isso, utilizamos um banco com dados experimentais de diferentes combinações de substâncias que compõem o concreto, o tempo que a mistura foi deixada para secar e a força compressiva final.
 
 Fazendo uso desses dados, da modelagem e análise estatística, foi possível chegar em modelos de regressão linear múltipla, focaremos em um modelo mais simples, com o intuito de poder saber o que leva um concreto a ser mais resistente do que outro e para previsão da força compressiva de certa mistura baseado nas variáveis de estudo.
 
-# Metodologia
+Em seguida, investigamos as suposições do modelo linear e se nosso modelo satisfaz as mesmas, por meio de testes de hipótese e análises gráficas, descrevemos a eficiência do modelo com base nas métricas de performance comuns, por fim concluímos o estudo resumindo os resultados obtidos e seu possível impacto da escolha da fabricação de novas misturas de concreto.
 
+# Metodologia
 As análises a seguir foram realizadas usando a linguagem de programação R [@R] com o *framework* de modelagem estatística *tidymodels* [@tidymodels]. Os códigos utilizados estão disponíveis no github [@github] e os documentos do relatório e apresentação foram feitos com Quarto [@quarto], um sistema de escrita e publicação científica.
 
 ## Construção do modelo
@@ -79,7 +77,7 @@ $$
     \ln(1 + x)  \hspace{+82pt}                        \lambda = 0, \; x \geqslant 0 \\
     [(1 - x)^{2 - \lambda} - 1] / (\lambda - 2) \quad \lambda \neq 2, \; x < 0 \\
     -\ln(1 - x) \hspace{+72pt}                        \lambda = 2, \; x < 0
- \end{cases}
+\end{cases}
 $$
 
 A escolha de variáveis e transformações usadas foram julgadas através das métricas de performance do coeficiente de determinação ($R^2$) e raiz do erro quadrático médio ($\text{RMSE}$ ou $\sigma$) porém mantendo todos os coeficientes do modelo significativos nos testes de hipótese individuais e buscando um modelo simples quando possível.
@@ -95,7 +93,7 @@ $$
 ::: 
 
 ## Verificação das suposições do modelo
-Após o ajuste do modelo, realizamos testes para as suposições do modelo: normalidade dos resíduos, linearidade, ausência de multicolinearidade, homocedasticidade e ausência de autocorrelação. Essas suposições são necessárias para termos um modelo linear válido:
+Após o ajuste do modelo, realizamos testes para as suposições do modelo: normalidade dos resíduos, linearidade, ausência de multicolinearidade, homocedasticidade e ausência de autocorrelação. Essas suposições são necessárias para termos um modelo linear válido. Usamos um nível de significância de 5%.
 
 * Resíduos não normais afetam a construção de intervalos de confiança e predição para a variável resposta e para os coeficientes pois dependem da distribuição normal. 
 
@@ -106,6 +104,8 @@ Após o ajuste do modelo, realizamos testes para as suposições do modelo: norm
 * Heterocedasticidade no modelo tornam não confiáveis as estimativas de variâncias e covariâncias para os coeficientes.
 
 * Autocorrelação dos resíduos indica alguma dependência temporal nos dados e perda de eficiência na estimativa dos coeficientes.
+
+{{< pagebreak >}}
 
 # Resultados
 
@@ -138,23 +138,18 @@ model <- workflow |>
     extract_fit_engine()
 ```
 
-```{r}
-#| output: false
-model |>
-    summary()
-
-workflow |>
-    last_fit(splits) |>
-    collect_metrics()
-```
-
-Devido a relação entre a força compressiva e o tempo de secagem ser não linear, criamos duas variáveis com o tempo transformado: tempo ao quadrado e tempo ao cubo. Ajustando um modelo sem intercepto com essas variáveis temos a seguinte relação entre a força compressiva do concreto ($y'$), a quantidade de cimento ($x_1'$), água ($x_2'$), escória de aço ($x_3'$) e o tempo de secagem ($x_t'$):
+Devido a relação entre a força compressiva e o tempo de secagem ser não linear, criamos duas variáveis com o tempo transformado: tempo ao quadrado e tempo ao cubo. Ajustando um modelo sem intercepto com essas variáveis temos a seguinte relação entre a força compressiva do concreto ($y'$), a quantidade de cimento ($x_1'$), escória de aço ($x_2'$), água ($x_3$) e o tempo de secagem ($x_t'$):
 
 $$
-\hat y' = 0.769 x_1' + 0.186 x_2' - 0.023 x_3' + 0.396 x_t'^2 - 0.050 x_t'^3
+\hat y' = 0.769 x_1' + 0.186 x_2' - 0.023 x_3 + 0.396 x_t'^2 - 0.050 x_t'^3
 $$
 
 ## Verificação das suposições do modelo
+A seguir, veremos os testes de hipótese e gráficos que sustentam as suposições necessárias para criação de um modelo linear válido.
+
+{{< pagebreak >}}
+
+### Normalidade
 : Resultado dos testes para normalidade {#tbl-norm}
 
 |Teste           | Estatística| p-valor|
@@ -172,7 +167,7 @@ Mais da metade dos testes da @tbl-norm não rejeitam a hipótese de normalidade 
 ```{r}
 #| fig-cap: Q-Q plot dos resíduos padronizados do modelo
 #| label: fig-norm
-#| fig-height: 3.7
+#| fig-height: 3.8
 #| out-width: 100%
 
 data |> 
@@ -184,6 +179,7 @@ data |>
     theme_bw(10, "serif")
 ```
 
+### Linearidade
 : Resultado dos testes para linearidade
 
 |Teste           | Estatística|    p-valor|
@@ -196,7 +192,7 @@ Os testes para linearidade do modelo discordam entre si, pelo gráfico da @fig-l
 ```{r}
 #| fig-cap: Gráfico dos valores observados versus valores estimados pelo modelo
 #| label: fig-linear
-#| fig-height: 4.5
+#| fig-height: 4.45
 #| out-width: 100%
 
 workflow |>
@@ -216,6 +212,7 @@ workflow |>
     theme_bw(10, "serif")
 ```
 
+### Ausência de multicolinearidade
 : Teste $t$ para os coeficientes do modelo {#tbl-multi}
 
 |Termo    | Estimativa|Erro padrão|Estatística|p-valor          |
@@ -231,7 +228,7 @@ Como se tratam de dados experimentais sobre o concreto, esse conjunto inclui vá
 ```{r}
 #| fig-cap: Gráfico da matriz de correlação entre as variáveis estudadas
 #| label: fig-multi
-#| fig-height: 4
+#| fig-height: 3.4
 #| out-width: 100%
 
 data |> 
@@ -243,15 +240,17 @@ data |>
         diag = FALSE,
         addgrid.col = "#00000040",
         tl.pos = "l",
-        tl.cex = 0.75,
+        tl.cex = 0.6,
         tl.col = "black",
+        tl.offset = 0.25,
         cl.length = 9,
-        cl.cex = 0.75,
-        cl.ratio = 0.3,
+        cl.cex = 0.6,
+        cl.ratio = 0.25,
         family = "mono"
     )
 ```
 
+### Homocedasticidade
 : Resultado dos testes para homocedasticidade {#tbl-homo}
 
 |Teste           |  Estatística| p-valor|
@@ -266,7 +265,7 @@ Todos os testes da @tbl-homo não rejeitam a hipótese do modelo ser homocedást
 ```{r}
 #| fig-cap: Gráfico dos valores estimados versus resíduos padronizados
 #| label: fig-homo
-#| fig-height: 4.3
+#| fig-height: 4
 #| out-width: 100%
 
 workflow |>
@@ -285,6 +284,8 @@ workflow |>
     theme_bw(10, "serif")
 ```
 
+### Ausêcia de autocorrelação
+
 : Resultado dos testes para autocorrelação
 
 |Teste           | Estatística|    p-valor|
@@ -296,17 +297,27 @@ Os resíduos do modelo são de fato correlacionados entre observações sequenci
 
 Sendo assim, a autocorrelação dos resíduos se dá pela estrutura dos dados experimentais, não por uma relação temporal entre cada experimento.
 
+## Performance do modelo
+
 : Intervalo de confiança dos coeficientes de regressão
 
-|Coeficientes|LI|LS|
-|:-----------|-:|:-|
-|cimento|0.742|0.795|
-|escória_de_aço|0.171|0.201|
-|água|-0.0244|-0.0216|
-|tempo2|0.369|0.422|
-|tempo3| -0.0549| -0.0458|
+|Coeficientes|     LI|     LS|
+|:-----------|------:|------:|
+|$x_1'$      |  0.743|  0.795|
+|$x_2'$      |  0.171|  0.201|
+|$x_3$       | -0.024| -0.022|
+|$x_t'^2$    |  0.370|  0.422|
+|$x_t'^3$    | -0.055| -0.046|
 
 Aqui podemos ver o intervalo de confiança para os coeficientes de regressão, que nos permitem entender o impacto médio causado na força compressiva do concreto por cada uma variável regressora. Por exemplo, para cada $kg$ de cimento em uma mistura de $m_3$ há um aumento médio na força compressiva do concreto entre 0.742 e 0.795. 
+
+
+```{r}
+#| output: false
+workflow |>
+    last_fit(splits) |>
+    collect_metrics()
+```
 
 {{< pagebreak >}}
 
