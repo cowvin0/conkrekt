@@ -4,7 +4,7 @@ lang: pt
 bibliography: includes/bib.bibtex
 urlcolor: SeaGreen
 linkcolor: SeaGreen
-title: kek
+title: Aplicação de Regressão Linear Múltipla na Modelagem de Força Compressiva de Concreto
 subtitle: UFPB - Regressão I
 author:
   - name: Paulo Ricardo Seganfredo Campana
@@ -14,7 +14,7 @@ date-format: long
 warning: false
 echo: false
 cache: true
-monofont: "Ubuntu Mono"
+# monofont: "Ubuntu Mono"
 monofontoptions: Scale = 1
 fig-cap-location: top
 ---
@@ -309,15 +309,15 @@ Sendo assim, a autocorrelação dos resíduos se dá pela estrutura dos dados ex
 |$x_t'^2$    |  0.370|  0.422|
 |$x_t'^3$    | -0.055| -0.046|
 
-Aqui podemos ver o intervalo de confiança para os coeficientes de regressão, que nos permitem entender o impacto médio causado na força compressiva do concreto por cada uma variável regressora. Por exemplo, para cada $kg$ de cimento em uma mistura de $m_3$ há um aumento médio na força compressiva do concreto entre 0.742 e 0.795. 
+Ao deixar o concreto secando por mais tempo, vemos pelo `tempo2`que há um impacto positivo na força compressiva do concreto. No entando, o `tempo3` nos trás a informação de que deixar secando por muito tempo diminui a eficiência da comperssão do concreto. O mesmo acontece para a `água`, tendo também um efeito negativo na força compressiva ao adicionar água no concreto. Por outro lado, `cimento` e `escória_de_aço` representam um aumento na força compressiva do concreto.
 
+### Coeficiente de determinação e raiz do erro quadrático médio
 
-```{r}
-#| output: false
-workflow |>
-    last_fit(splits) |>
-    collect_metrics()
-```
+O modelo alcançou um $R^2$ de 80.82% e uma raiz de erro quadrático médio (RMSE) de 0.6072249. Além disso, todas as variáveis regressoras transformadas que foram utilizadas para a modelagem são significativas. Foi testado também um modelo mais complexo, tendo se chegado a um $R^2$ de 84%, com todas as regressoras sendo significativas para o modelo linear.
+
+# Conclusão
+
+Vimos que o modelo provavelmente não cumpre com a suposição de lineariade. Além disso, o modelo também não passou nos testes de autocorrelação e por isso chegamos a uma possível causa disso. Vimos que os erros podem ser correlacionados devido a como os dados experimentais são organizados. Por exemplo, temos que há um certo padrão em 5 observações sequenciais com a mesma mistura porém com tempos de secagens diferentes.
 
 {{< pagebreak >}}
 
