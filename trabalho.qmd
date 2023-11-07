@@ -309,7 +309,7 @@ Sendo assim, a autocorrelação dos resíduos se dá pela estrutura dos dados ex
 |$x_t'^2$    |  0.370|  0.422|
 |$x_t'^3$    | -0.055| -0.046|
 
-Ao deixar o concreto secando por mais tempo, vemos pelo `tempo2`que há um impacto positivo na força compressiva do concreto. No entando, o `tempo3` nos trás a informação de que deixar secando por muito tempo diminui a eficiência da comperssão do concreto. O mesmo acontece para a `água`, tendo também um efeito negativo na força compressiva ao adicionar água no concreto. Por outro lado, `cimento` e `escória_de_aço` representam um aumento na força compressiva do concreto.
+Ao deixar o concreto secando por mais tempo, vemos pelo `tempo2`que há um impacto positivo na força compressiva do concreto. No entando, o `tempo3` nos trás a informação de que deixar secando por muito tempo diminui a eficiência da comperssão do concreto. O mesmo acontece para a `água`, tendo também um efeito negativo na força compressiva ao adicionar água no concreto. Por outro lado, `cimento` e `escória_de_aço` representam um aumento na força compressiva do concreto. O modelo também concluiu sobre a hipótese de normalidade, temos chegado 
 
 ### Coeficiente de determinação e raiz do erro quadrático médio
 
@@ -317,7 +317,9 @@ O modelo alcançou um $R^2$ de 80.82% e uma raiz de erro quadrático médio (RMS
 
 # Conclusão
 
-Vimos que o modelo provavelmente não cumpre com a suposição de lineariade. Além disso, o modelo também não passou nos testes de autocorrelação e por isso chegamos a uma possível causa disso. Vimos que os erros podem ser correlacionados devido a como os dados experimentais são organizados. Por exemplo, temos que há um certo padrão em 5 observações sequenciais com a mesma mistura porém com tempos de secagens diferentes.
+Vimos que o modelo provavelmente não cumpre com a suposição de lineariade. Além disso, o modelo também não passou nos testes de autocorrelação e por isso chegamos a uma possível causa disso. Vimos que os erros podem ser correlacionados devido a como os dados experimentais são organizados. Testando dois modelos foi também possível observar o comportamento de um modelo mais complexo. Enquanto o modelo complexo entregou uma maior performance, ele diminuiu ao mesmo tempo consideravelmente a interpretação do modelo. Ainda, vimos que o modelo parece seguir a suposição de normalidade e homocedasticidade.
+
+Este modelo produz predições precisas da força compressiva do concreto, não obstante suprindo uma grande demanda para projetos de construções. Dessa forma, o modelo procura atender as necessidades do mercado de construção civil, permitindo com que se adicione os componentes do concreto e permitindo a estimação de concretos com melhores forças compressivas.
 
 {{< pagebreak >}}
 
