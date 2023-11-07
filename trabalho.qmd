@@ -1,20 +1,21 @@
 ---
 format: pdf
+documentclass: scrreprt
 lang: pt
 bibliography: includes/bib.bibtex
 urlcolor: SeaGreen
 linkcolor: SeaGreen
 title: Aplicação de Regressão Linear Múltipla na Modelagem de Força Compressiva de Concreto
-subtitle: UFPB - Regressão I
+subtitle: Universidade Federal da Paraíba - CCEN
 author:
-  - name: Paulo Ricardo Seganfredo Campana
-  - name: Gabriel de Jesus Pereira
+  - name: Paulo Ricardo Seganfredo Campana - 20210044220
+  - name: Gabriel de Jesus Pereira - 20200121424
 date: today
 date-format: long
 warning: false
 echo: false
 cache: true
-# monofont: "Ubuntu Mono"
+monofont: "Ubuntu Mono"
 monofontoptions: Scale = 1
 fig-cap-location: top
 ---
@@ -50,7 +51,7 @@ test <- testing(splits)
 ```
 
 # Resumo
-O desenvolvimento de um país emergente está diretamente relacionado com o avanço da indústria, particularmente na construção civil, sendo uma das áreas mais importantes para a criação de empregos e o aperfeiçoamento da infraestrutura de uma nação. O concreto, um dos materiais mais importantes e presentes na construção civil e está sempre em constante desenvolvimento, no entanto, não é possível saber como podemos melhorar-lo se não antes conhecermos a seleção adequada de materiais e características da mistura. Dessa forma, entender e aprimorar as propriedades do concreto, é de importância vital para garantir a segurança e o desempenho de estruturas modernas. Com base nisso, este estudo se propõe a investigar os fatores que influenciam na força compressiva do concreto utilizando a regressão linear múltipla e técnicas estatísticas de análise da mesma. Obtendo assim uma relação numérica entre as características da criação do concreto e sua eficácia como material base para grandes estruturas.
+O desenvolvimento de um país emergente está diretamente relacionado com o avanço da indústria, particularmente na construção civil, sendo uma das áreas mais importantes para a criação de empregos e o aperfeiçoamento da infraestrutura de uma nação. O concreto, um dos materiais mais importantes presentes na construção civil, está sempre em constante desenvolvimento, no entanto, não é possível saber como podemos melhorar-lo se não antes conhecermos a seleção adequada de materiais e características da mistura. Dessa forma, entender e aprimorar as propriedades do concreto, é de importância vital para garantir a segurança e o desempenho de estruturas modernas. Com base nisso, este estudo se propõe a investigar os fatores que influenciam na força compressiva do concreto utilizando a regressão linear múltipla e técnicas estatísticas de análise da mesma. Obtendo assim uma relação numérica entre as características da criação do concreto e sua eficácia como material base para grandes estruturas.
 
 Palavras-chave: Regressão linear, concreto, suposições do modelo.
 
@@ -104,8 +105,6 @@ Após o ajuste do modelo, realizamos testes para as suposições do modelo: norm
 * Heterocedasticidade no modelo tornam não confiáveis as estimativas de variâncias e covariâncias para os coeficientes.
 
 * Autocorrelação dos resíduos indica alguma dependência temporal nos dados e perda de eficiência na estimativa dos coeficientes.
-
-{{< pagebreak >}}
 
 # Resultados
 
@@ -297,11 +296,18 @@ Os resíduos do modelo são de fato correlacionados entre observações sequenci
 
 Sendo assim, a autocorrelação dos resíduos se dá pela estrutura dos dados experimentais, não por uma relação temporal entre cada experimento.
 
+{{< pagebreak >}}
+
 ## Performance do modelo
+
+### Coeficiente de determinação e raiz do erro quadrático médio
+O modelo alcançou um $R^2$ de 80.82% e uma raiz de erro quadrático médio (RMSE) de 0.607. Ajustamos também um modelo mais complexo, que entre interações entre as variáveis e novas medidas a partir das mesmas, possuía 20 coeficientes, todos significativos, este modelo obteve um $R^2$ de 85%, não achamos esse alto aumento de complexidade útil para a modelagem, então optamos pelo modelo mais simples.
+
+### Interpretação dos parâmetros
 
 : Intervalo de confiança dos coeficientes de regressão
 
-|Coeficientes|     LI|     LS|
+|Coeficientes|Limite inferior|Limite superior|
 |:-----------|------:|------:|
 |$x_1'$      |  0.743|  0.795|
 |$x_2'$      |  0.171|  0.201|
@@ -309,19 +315,16 @@ Sendo assim, a autocorrelação dos resíduos se dá pela estrutura dos dados ex
 |$x_t'^2$    |  0.370|  0.422|
 |$x_t'^3$    | -0.055| -0.046|
 
-Ao deixar o concreto secando por mais tempo, vemos pelo `tempo2`que há um impacto positivo na força compressiva do concreto. No entando, o `tempo3` nos trás a informação de que deixar secando por muito tempo diminui a eficiência da comperssão do concreto. O mesmo acontece para a `água`, tendo também um efeito negativo na força compressiva ao adicionar água no concreto. Por outro lado, `cimento` e `escória_de_aço` representam um aumento na força compressiva do concreto.
+Como visto anteriormente, com as transformações utilizadas, todas as variáveis regressoras da modelagem são altamente significativas. A interpretação numérica dos coeficientes não é útil devido as transformações feitas na variável resposta e nos regressores. Porém podemos falar sobre o efeito dos regressores já que as transformações mantem a ordem dos valores.
 
-### Coeficiente de determinação e raiz do erro quadrático médio
+Desse modo, Ao deixar o concreto secando por mais tempo, vemos pelo coeficiente de $x_t'^2$ que há um impacto positivo na força compressiva do concreto. No entanto, o coeficiente de $x_t'^3$ nos trás a informação de que deixar a mistura secando por muito tempo tem impacto negativo na variável resposta. 
 
-O modelo alcançou um $R^2$ de 80.82% e uma raiz de erro quadrático médio (RMSE) de 0.6072249. Além disso, todas as variáveis regressoras transformadas que foram utilizadas para a modelagem são significativas. Foi testado também um modelo mais complexo, tendo se chegado a um $R^2$ de 84%, com todas as regressoras sendo significativas para o modelo linear.
+Para o coeficiente negativo da presença de água na mistura: $x_3$, vemos que misturas com grandes quantidades de água não contribuem para um concreto mais resistente, por outro lado, a presença de maiores quantidades de cimento e escória de aço representam um aumento na força compressiva.
 
 # Conclusão
+Vimos que o modelo talvez não cumpre com a suposição de linearidade e também não passou nos testes de autocorrelação devido a natureza de dados estruturados que provêm de experimentos. Testando dois modelos foi possível observar o comportamento de um modelo mais complexo, Que enquanto entregou uma maior performance, não foi o suficiente para considerarmos contra um modelo mais simples. Além disso, vimos que o modelo estudado cumpre com as suposições de normalidade, ausência de multicolinearidade e homocedasticidade.
 
-Vimos que o modelo provavelmente não cumpre com a suposição de lineariade. Além disso, o modelo também não passou nos testes de autocorrelação e por isso chegamos a uma possível causa disso. Vimos que os erros podem ser correlacionados devido a como os dados experimentais são organizados. Testando dois modelos foi também possível observar o comportamento de um modelo mais complexo. Enquanto o modelo complexo entregou uma maior performance, ele diminuiu ao mesmo tempo consideravelmente a interpretação do modelo. Ainda, vimos que o modelo parece seguir a suposição de normalidade e homocedasticidade.
-
-Este modelo produz predições precisas da força compressiva do concreto, não obstante suprindo uma grande demanda para projetos de construções. Dessa forma, o modelo procura atender as necessidades do mercado de construção civil, permitindo com que se adicione os componentes do concreto e permitindo a estimação de concretos com melhores forças compressivas.
-
-{{< pagebreak >}}
+Este modelo produz predições precisas da força compressiva do concreto, não obstante suprindo uma demanda para fabricantes de concreto e pesquisadores da Engenharia Civil, dessa forma, o modelo procura atender as necessidades do mercado da construção, permitindo com que, com a especificação dos componentes do concreto chegamos em uma estimativa de sua força compressiva.
 
 # Referências
 
