@@ -20,11 +20,6 @@ monofontoptions: Scale = 1
 fig-cap-location: top
 ---
 
-::: hidden
-\pagestyle{empty}
-\thispagestyle{empty}
-:::
-
 ```{r}
 library(tidyverse)
 library(tidymodels)
