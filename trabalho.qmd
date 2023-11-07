@@ -309,7 +309,7 @@ Sendo assim, a autocorrelação dos resíduos se dá pela estrutura dos dados ex
 |$x_t'^2$    |  0.370|  0.422|
 |$x_t'^3$    | -0.055| -0.046|
 
-Ao deixar o concreto secando por mais tempo, vemos pelo `tempo2`que há um impacto positivo na força compressiva do concreto. No entando, o `tempo3` nos trás a informação de que deixar secando por muito tempo diminui a eficiência da comperssão do concreto. O mesmo acontece para a `água`, tendo também um efeito negativo na força compressiva ao adicionar água no concreto. Por outro lado, `cimento` e `escória_de_aço` representam um aumento na força compressiva do concreto. O modelo também concluiu sobre a hipótese de normalidade, temos chegado 
+Ao deixar o concreto secando por mais tempo, vemos pelo `tempo2`que há um impacto positivo na força compressiva do concreto. No entando, o `tempo3` nos trás a informação de que deixar secando por muito tempo diminui a eficiência da comperssão do concreto. O mesmo acontece para a `água`, tendo também um efeito negativo na força compressiva ao adicionar água no concreto. Por outro lado, `cimento` e `escória_de_aço` representam um aumento na força compressiva do concreto.
 
 ### Coeficiente de determinação e raiz do erro quadrático médio
 
